@@ -121,8 +121,14 @@ export default function CheckoutPage({ program }) {
 
     if (paymentMethod === "etransfer") {
       navigate(`/etransfer/${data.id}`);
-    } else {
-      setCheckoutMessage("Stripe flow will be connected next.");
+    } else if (paymentMethod === "stripe") {
+      const res = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        body: JSON.stringify({ programId: program.id }),
+      });
+
+      const { url } = await res.json();
+      window.location.href = url;
     }
 
     setSubmitting(false);
