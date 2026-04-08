@@ -7,7 +7,7 @@ export const PROGRAMS = [
     ages: "Ages 12+",
     timeline: "8 weeks",
     summary:
-      "Build early interest and fundamentals in programming and game development.",
+      "Build early interest and fundamentals in programming and game development.\n",
     breakdown: [
       "Programming intro with JavaScript",
       "Game development basics",
@@ -24,7 +24,7 @@ export const PROGRAMS = [
     ages: "Ages 14+",
     timeline: "8 weeks",
     summary:
-      "Expand into full projects, Unity C#, web development, and portfolio work.                        ",
+      "Expand into full projects, Unity C#, web development, and portfolio work.\n",
     breakdown: [
       "Unity C# game development",
       "2D and 3D pipeline",
