@@ -121,9 +121,9 @@ export default function HomePage() {
             ...va.textStyles.baseText(va.colors.primaryTextDark),
           }}
         >
-          <div>Email: info@digitaldevelopmentinstitute.com</div>
+          <div>Email: contact.digitaldevinstitute@gmail.com</div>
           <div>Location: Greater Toronto Area</div>
-          <div>Delivery: Remote and in-person</div>
+          <div>Delivery: Remote via Google Classroom</div>
         </div>
       </SectionCard>
     </PageContainer>
