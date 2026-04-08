@@ -124,10 +124,11 @@ export default function HomePage() {
           <div>
             Email:{" "}
             <a
-              href="mailto:contact.digitaldevinstitute@gmail.com"
+              href="mailto:contact.digitaldevinstitute@gmail.com?subject=Digital%20Development%20Institute%20Inquiry"
               style={{
                 color: va.colors.primaryColor,
                 textDecoration: "underline",
+                cursor: "pointer",
               }}
             >
               contact.digitaldevinstitute@gmail.com

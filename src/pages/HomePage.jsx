@@ -121,7 +121,19 @@ export default function HomePage() {
             ...va.textStyles.baseText(va.colors.primaryTextDark),
           }}
         >
-          <div>Email: contact.digitaldevinstitute@gmail.com</div>
+          <div>
+            Email:{" "}
+            <a
+              href="mailto:contact.digitaldevinstitute@gmail.com?subject=Digital%20Development%20Institute%20Inquiry"
+              style={{
+                color: va.colors.primaryColor,
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+            >
+              contact.digitaldevinstitute@gmail.com
+            </a>
+          </div>
           <div>Location: Greater Toronto Area</div>
           <div>Delivery: Remote via Google Classroom</div>
         </div>
