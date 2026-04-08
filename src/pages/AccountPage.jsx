@@ -106,10 +106,7 @@ export default function AccountPage() {
   return (
     <PageContainer>
       <div className={va.layout.accountGrid}>
-        <SectionCard
-          title="Account"
-          description="Simple login and registration layout."
-        >
+        <SectionCard title="Account">
           <div className={va.spacing.sectionStack}>
             <div className={va.layout.toggleGridTwo}>
               {mode === "login" ? (
@@ -196,10 +193,7 @@ export default function AccountPage() {
           </div>
         </SectionCard>
 
-        <SectionCard
-          title="User profile preview"
-          description="Target data structure for simple accounts."
-        >
+        <SectionCard title="User Profile Preview" description="Your profile">
           <div
             className={va.layout.infoList}
             style={{ color: va.colors.primaryTextDark }}

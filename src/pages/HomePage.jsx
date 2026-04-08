@@ -19,8 +19,8 @@ export default function HomePage() {
     <PageContainer className={va.spacing.pageStack}>
       <section className={va.layout.twoColumn}>
         <SectionCard
-          title="Learn programming, software, and game development."
-          description="Structured programs for students from Grade 8 to 12, with a clear path from fundamentals to advanced portfolio work."
+          title="Learn programming through software and game development."
+          description="Expert-led programs built to teach fundamentals to portfolio-ready work, and everything inbetween."
         >
           <div className={va.layout.flexWrapRow}>
             <button
@@ -50,7 +50,7 @@ export default function HomePage() {
 
         <SectionCard
           title="About"
-          description="Digital Development Institute provides high-school students with practical training in coding, software development, logic, and project building."
+          description="Digital Development Institute gives students ages 12 to 18 practical, project-based training in coding, software development, logic, and real-world digital creation, while welcoming any learner age 12 and up who is ready to build."
         >
           <div
             className={va.layout.infoList}
@@ -77,7 +77,7 @@ export default function HomePage() {
                 className={va.icons.small}
                 style={{ color: va.colors.secondaryColor }}
               />
-              <span>Remote and in-person delivery options</span>
+              <span>Remote work style</span>
             </div>
           </div>
         </SectionCard>
@@ -96,7 +96,7 @@ export default function HomePage() {
             className={va.text.smallFont}
             style={{ color: va.colors.primaryTextDark }}
           >
-            Choose a level to see details and begin checkout.
+            Choose a level to see more details and begin checkout.
           </p>
         </div>
 
@@ -113,7 +113,7 @@ export default function HomePage() {
 
       <SectionCard
         title="Contact"
-        description="General contact information placeholder."
+        description="Contact us for any inquires or issues."
       >
         <div
           className={va.layout.contactList}

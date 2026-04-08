@@ -55,7 +55,7 @@ export default function Navbar() {
               className="text-xs"
               style={{ color: va.colors.primaryTextDark }}
             >
-              Programming and development programs
+              Programming and Development programs
             </div>
           </div>
         </button>

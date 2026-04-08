@@ -7,7 +7,7 @@ export default function ContactPage() {
     <PageContainer>
       <SectionCard
         title="Contact"
-        description="Replace placeholders with your real business contact details."
+        description="Contact us for any inquires or issues."
       >
         <div
           className={va.layout.contactList}
