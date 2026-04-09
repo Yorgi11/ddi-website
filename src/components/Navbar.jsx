@@ -1,7 +1,7 @@
-import { GraduationCap } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { visualAid as va } from "../config/visualAid";
 import { useAuth } from "../context/AuthContext";
+import LogoLogo from "../assets/images/Logo_logo.png";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -41,10 +41,17 @@ export default function Navbar() {
             className={va.icons.logoBox}
             style={{
               backgroundColor: va.colors.primaryColor,
-              color: va.colors.secondaryText,
             }}
           >
-            <GraduationCap className={va.icons.medium} />
+            <img
+              src={LogoLogo}
+              alt="Digital Development Institute logo"
+              style={{
+                width: "24px",
+                height: "24px",
+                objectFit: "contain",
+              }}
+            />
           </div>
 
           <div className={va.misc.textLeft}>
