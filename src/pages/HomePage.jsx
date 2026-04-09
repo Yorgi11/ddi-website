@@ -21,6 +21,9 @@ export default function HomePage() {
         <SectionCard
           title="Learn programming through software and game development."
           description="Expert-led programs built to teach fundamentals to portfolio-ready work, and everything inbetween."
+          fullHeight
+          contentBottom
+          minHeight="255px"
         >
           <div className={va.layout.flexWrapRow}>
             <button
@@ -51,6 +54,8 @@ export default function HomePage() {
         <SectionCard
           title="About"
           description="Digital Development Institute gives students ages 12 to 18 practical, project-based training in coding, software development, logic, and real-world digital creation, while welcoming any learner age 12 and up who is ready to build."
+          fullHeight
+          minHeight="255px"
         >
           <div
             className={va.layout.infoList}

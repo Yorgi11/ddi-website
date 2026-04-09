@@ -103,7 +103,7 @@ export const visualAid = {
   layout: {
     appShell: "min-h-screen",
     navbarShell: "sticky top-0 z-20 border-b",
-    navbarInner: "flex items-center justify-between py-4",
+    navbarInner: "flex items-center justify-between py-0",
     navList: "hidden gap-2 md:flex",
 
     twoColumn: "grid gap-6 md:grid-cols-2",

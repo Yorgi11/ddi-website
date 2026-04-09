@@ -9,6 +9,9 @@ export default function ProgramCard({ program, onView }) {
         backgroundColor: va.colors.surfaceColor,
         borderColor: va.colors.borderColor,
         color: va.colors.primaryText,
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
       }}
     >
       <div className={`${va.layout.titleRow} ${va.spacing.marginBottomMedium}`}>
@@ -35,26 +38,28 @@ export default function ProgramCard({ program, onView }) {
         className={`${va.spacing.marginBottomMedium} ${va.text.smallFont}`}
         style={{ color: va.colors.primaryTextDark }}
       >
-        {program.grades} • {program.ages} • {program.timeline}
+        {program.grades} • {program.ages}
       </div>
 
       <p
-        className={`${va.spacing.marginBottomLarge} ${va.text.smallFont}`}
+        className={va.text.smallFont}
         style={{ color: va.colors.primaryTextDark }}
       >
         {program.summary}
       </p>
 
-      <button
-        onClick={() => onView(program.id)}
-        className={`${va.buttons.primaryButton} ${va.buttons.fullWidthButton}`}
-        style={{
-          backgroundColor: va.colors.primaryColor,
-          ...va.textStyles.bodyText(va.colors.secondaryText),
-        }}
-      >
-        View Program
-      </button>
+      <div style={{ marginTop: "auto", paddingTop: "16px" }}>
+        <button
+          onClick={() => onView(program.id)}
+          className={`${va.buttons.primaryButton} ${va.buttons.fullWidthButton}`}
+          style={{
+            backgroundColor: va.colors.primaryColor,
+            ...va.textStyles.bodyText(va.colors.secondaryText),
+          }}
+        >
+          View Program
+        </button>
+      </div>
     </div>
   );
 }

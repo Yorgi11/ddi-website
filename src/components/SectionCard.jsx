@@ -1,6 +1,13 @@
 import { visualAid as va } from "../config/visualAid";
 
-export default function SectionCard({ title, description, children }) {
+export default function SectionCard({
+  title,
+  description,
+  children,
+  fullHeight = false,
+  contentBottom = false,
+  minHeight = null,
+}) {
   return (
     <section
       className={`${va.panels.primaryPanel} ${va.spacing.cardSpacing}`}
@@ -8,6 +15,10 @@ export default function SectionCard({ title, description, children }) {
         backgroundColor: va.colors.surfaceColor,
         borderColor: va.colors.borderColor,
         color: va.colors.primaryText,
+        display: "flex",
+        flexDirection: "column",
+        height: fullHeight ? "100%" : "auto",
+        minHeight: minHeight ?? "auto",
       }}
     >
       {(title || description) && (
@@ -30,7 +41,17 @@ export default function SectionCard({ title, description, children }) {
           )}
         </div>
       )}
-      {children}
+
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          flex: 1,
+          justifyContent: contentBottom ? "space-between" : "flex-start",
+        }}
+      >
+        {children}
+      </div>
     </section>
   );
 }

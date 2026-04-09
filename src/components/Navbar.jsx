@@ -37,18 +37,13 @@ export default function Navbar() {
           onClick={() => navigate(user ? "/dashboard" : "/")}
           style={{ color: va.colors.primaryText }}
         >
-          <div
-            className={va.icons.logoBox}
-            style={{
-              backgroundColor: va.colors.primaryColor,
-            }}
-          >
+          <div>
             <img
               src={LogoLogo}
-              alt="Digital Development Institute logo"
+              alt="DDI logo"
               style={{
-                width: "24px",
-                height: "24px",
+                width: "64px",
+                height: "64px",
                 objectFit: "contain",
               }}
             />
