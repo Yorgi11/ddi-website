@@ -22,32 +22,33 @@ export default function HomePage() {
           title="Learn programming through software and game development."
           description="Expert-led programs built to teach fundamentals to portfolio-ready work, and everything inbetween."
           fullHeight
-          contentBottom
           minHeight="255px"
         >
-          <div className={va.layout.flexWrapRow}>
-            <button
-              onClick={() => navigate("/programs")}
-              className={va.buttons.primaryButton}
-              style={{
-                backgroundColor: va.colors.primaryColor,
-                ...va.textStyles.bodyText(va.colors.secondaryText),
-              }}
-            >
-              View Programs
-            </button>
+          <div style={{ marginTop: "auto" }}>
+            <div className={va.layout.flexWrapRow}>
+              <button
+                onClick={() => navigate("/programs")}
+                className={va.buttons.primaryButton}
+                style={{
+                  backgroundColor: va.colors.primaryColor,
+                  ...va.textStyles.bodyText(va.colors.secondaryText),
+                }}
+              >
+                View Programs
+              </button>
 
-            <button
-              onClick={() => navigate("/contact")}
-              className={va.buttons.secondaryButton}
-              style={{
-                backgroundColor: va.colors.surfaceColor,
-                borderColor: va.colors.borderColor,
-                ...va.textStyles.bodyText(va.colors.primaryText),
-              }}
-            >
-              Contact
-            </button>
+              <button
+                onClick={() => navigate("/contact")}
+                className={va.buttons.secondaryButton}
+                style={{
+                  backgroundColor: va.colors.surfaceColor,
+                  borderColor: va.colors.borderColor,
+                  ...va.textStyles.bodyText(va.colors.primaryText),
+                }}
+              >
+                Contact
+              </button>
+            </div>
           </div>
         </SectionCard>
 

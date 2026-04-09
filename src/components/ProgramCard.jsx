@@ -38,7 +38,7 @@ export default function ProgramCard({ program, onView }) {
         className={`${va.spacing.marginBottomMedium} ${va.text.smallFont}`}
         style={{ color: va.colors.primaryTextDark }}
       >
-        {program.grades} • {program.ages}
+        {program.grades} • {program.ages} • {program.timeline}
       </div>
 
       <p

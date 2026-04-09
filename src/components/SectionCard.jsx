@@ -5,7 +5,6 @@ export default function SectionCard({
   description,
   children,
   fullHeight = false,
-  contentBottom = false,
   minHeight = null,
 }) {
   return (
@@ -31,6 +30,7 @@ export default function SectionCard({
               {title}
             </h2>
           )}
+
           {description && (
             <p
               className={`${va.spacing.marginTopSmall} ${va.text.smallFont}`}
@@ -47,7 +47,6 @@ export default function SectionCard({
           display: "flex",
           flexDirection: "column",
           flex: 1,
-          justifyContent: contentBottom ? "space-between" : "flex-start",
         }}
       >
         {children}
