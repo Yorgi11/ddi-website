@@ -293,3 +293,51 @@ Preview with Wrangler
 npm run preview
 Deploy
 npm run deploy
+
+Environment Setup
+
+This project expects environment variables for Supabase, and Stripe-related secrets for checkout in deployment.
+
+Examples include:
+
+Supabase project URL
+Supabase anon key
+Stripe secret key
+domain / deployment URL
+
+Because checkout and auth depend on external services, the project needs those values configured correctly before the full flow will work.
+
+Main Project Areas
+
+Some of the main pieces of the codebase are:
+
+src/App.jsx
+Main app routing and route structure
+src/context/AuthContext.jsx
+Shared authentication and profile loading logic
+src/lib/supabase.js
+Supabase client setup
+src/data/programs.js
+Program definitions, pricing, and rules
+src/pages/*
+Public pages, checkout pages, dashboard, account, admin, and contact flows
+src/components/*
+Shared UI components and route protection helpers
+src/lib/*
+Shared business logic for progression, display state, pricing, and portal summaries
+functions/create-checkout-session.js
+Stripe checkout session creation
+What This Project Demonstrates
+
+This project shows my ability to build and organize:
+
+a real multi-page React application
+reusable component systems
+auth-aware navigation and protected routes
+progression-based business logic
+payment and enrollment flows
+Supabase-backed application state
+admin tooling inside a production-style frontend
+a branded UI system rather than one-off page styling
+
+It also reflects the kind of software I like building: systems that are both user-facing and operationally useful.
