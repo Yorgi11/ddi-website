@@ -1,5 +1,12 @@
 import { createClient } from "@supabase/supabase-js";
 
+export const DEFAULT_PUBLIC_CONFIG = {
+  brevoSenderEmail: "ddi@digitaldevinstitute.com",
+  brevoSenderName: "Digital Development Institute",
+  domain: "https://digitaldevinstitute.com",
+  supabaseUrl: "https://megtizlllbygpglzhpik.supabase.co",
+};
+
 export function jsonResponse(body, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
@@ -7,8 +14,18 @@ export function jsonResponse(body, status = 200) {
   });
 }
 
+export function getBrevoSender(env) {
+  return {
+    email: env.BREVO_SENDER_EMAIL || DEFAULT_PUBLIC_CONFIG.brevoSenderEmail,
+    name: env.BREVO_SENDER_NAME || DEFAULT_PUBLIC_CONFIG.brevoSenderName,
+  };
+}
+
 export function getSupabaseAdmin(env) {
-  const supabaseUrl = env.SUPABASE_URL || env.VITE_SUPABASE_URL;
+  const supabaseUrl =
+    env.SUPABASE_URL ||
+    env.VITE_SUPABASE_URL ||
+    DEFAULT_PUBLIC_CONFIG.supabaseUrl;
   const serviceRoleKey = env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !serviceRoleKey) {
@@ -23,7 +40,8 @@ export function getSupabaseAdmin(env) {
 }
 
 export function getDomain(env, request) {
-  const configuredDomain = env.DOMAIN || env.SITE_URL;
+  const configuredDomain =
+    env.DOMAIN || env.SITE_URL || DEFAULT_PUBLIC_CONFIG.domain;
 
   if (configuredDomain) {
     return configuredDomain.replace(/\/$/, "");

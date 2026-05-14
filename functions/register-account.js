@@ -1,4 +1,5 @@
 import {
+  getBrevoSender,
   getDomain,
   getSupabaseAdmin,
   jsonResponse,
@@ -17,17 +18,6 @@ function escapeHtml(value) {
 
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-function getSender(env) {
-  const email = env.BREVO_SENDER_EMAIL;
-  const name = env.BREVO_SENDER_NAME || "Digital Development Institute";
-
-  if (!email) {
-    throw new Error("Missing BREVO_SENDER_EMAIL.");
-  }
-
-  return { email, name };
 }
 
 function buildSignupEmail({ username, email, confirmationUrl, domain }) {
@@ -98,7 +88,7 @@ async function sendBrevoEmail(env, email, username, confirmationUrl, domain) {
       "content-type": "application/json",
     },
     body: JSON.stringify({
-      sender: getSender(env),
+      sender: getBrevoSender(env),
       to: [{ email, name: username || email }],
       subject: content.subject,
       htmlContent: content.htmlContent,

@@ -1,4 +1,8 @@
-import { jsonResponse } from "./_payment-utils.js";
+import {
+  getBrevoSender,
+  getDomain,
+  jsonResponse,
+} from "./_payment-utils.js";
 
 const BREVO_EMAIL_ENDPOINT = "https://api.brevo.com/v3/smtp/email";
 
@@ -13,17 +17,6 @@ function escapeHtml(value) {
 
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-function getSender(env) {
-  const email = env.BREVO_SENDER_EMAIL;
-  const name = env.BREVO_SENDER_NAME || "Digital Development Institute";
-
-  if (!email) {
-    throw new Error("Missing BREVO_SENDER_EMAIL.");
-  }
-
-  return { email, name };
 }
 
 function buildAccountEmail({ username, email, domain }) {
@@ -64,15 +57,10 @@ export async function onRequestPost(context) {
       return jsonResponse({ error: "A valid email is required." }, 400);
     }
 
-    const domain = (context.env.DOMAIN || context.env.SITE_URL || "").replace(
-      /\/$/,
-      "",
-    );
-    const fallbackDomain = new URL(context.request.url).origin;
     const content = buildAccountEmail({
       username,
       email,
-      domain: domain || fallbackDomain,
+      domain: getDomain(context.env, context.request),
     });
 
     const response = await fetch(BREVO_EMAIL_ENDPOINT, {
@@ -83,7 +71,7 @@ export async function onRequestPost(context) {
         "content-type": "application/json",
       },
       body: JSON.stringify({
-        sender: getSender(context.env),
+        sender: getBrevoSender(context.env),
         to: [
           {
             email,
