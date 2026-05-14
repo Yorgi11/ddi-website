@@ -68,6 +68,12 @@ function buildSignupEmail({ username, email, confirmationUrl, domain }) {
   };
 }
 
+function forceConfirmationRedirect(actionLink, domain) {
+  const url = new URL(actionLink);
+  url.searchParams.set("redirect_to", `${domain}/account`);
+  return url.toString();
+}
+
 async function sendBrevoEmail(env, email, username, confirmationUrl, domain) {
   if (!env.BREVO_API_KEY) {
     throw new Error("Missing BREVO_API_KEY.");
@@ -149,7 +155,9 @@ export async function onRequestPost(context) {
       );
     }
 
-    const confirmationUrl = data?.properties?.action_link;
+    const confirmationUrl = data?.properties?.action_link
+      ? forceConfirmationRedirect(data.properties.action_link, domain)
+      : null;
 
     if (!confirmationUrl) {
       return jsonResponse(
