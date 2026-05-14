@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import {
+  DEFAULT_PUBLIC_CONFIG,
   confirmPayment,
   fetchPayment,
   getSupabaseAdmin,
@@ -9,19 +10,22 @@ import {
 } from "./_payment-utils.js";
 
 function getPayPalBaseUrl(env) {
-  return env.PAYPAL_ENVIRONMENT === "live"
+  const environment =
+    env.PAYPAL_ENVIRONMENT || DEFAULT_PUBLIC_CONFIG.paypalEnvironment;
+
+  return environment === "live"
     ? "https://api-m.paypal.com"
     : "https://api-m.sandbox.paypal.com";
 }
 
 async function getPayPalAccessToken(env) {
-  if (!env.PAYPAL_CLIENT_ID || !env.PAYPAL_CLIENT_SECRET) {
+  const clientId = env.PAYPAL_CLIENT_ID || DEFAULT_PUBLIC_CONFIG.paypalClientId;
+
+  if (!clientId || !env.PAYPAL_CLIENT_SECRET) {
     throw new Error("Missing PAYPAL_CLIENT_ID or PAYPAL_CLIENT_SECRET.");
   }
 
-  const credentials = btoa(
-    `${env.PAYPAL_CLIENT_ID}:${env.PAYPAL_CLIENT_SECRET}`,
-  );
+  const credentials = btoa(`${clientId}:${env.PAYPAL_CLIENT_SECRET}`);
 
   const response = await fetch(`${getPayPalBaseUrl(env)}/v1/oauth2/token`, {
     method: "POST",

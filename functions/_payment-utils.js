@@ -4,6 +4,9 @@ export const DEFAULT_PUBLIC_CONFIG = {
   brevoSenderEmail: "ddi@digitaldevinstitute.com",
   brevoSenderName: "Digital Development Institute",
   domain: "https://digitaldevinstitute.com",
+  paypalClientId:
+    "AUtcPwklZ8siEqJrAQG6cEn-o1Vg83zG8IHIKu75gORyTpyyda3AT-kmCQiP81ED6iUF_7irnh3G3E3Q",
+  paypalEnvironment: "live",
   supabaseUrl: "https://megtizlllbygpglzhpik.supabase.co",
 };
 
