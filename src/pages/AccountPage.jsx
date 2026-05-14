@@ -28,6 +28,19 @@ export default function AccountPage() {
   const location = useLocation();
   const redirectTo = location.state?.from?.pathname || "/account";
 
+  function getAuthErrorMessage(error) {
+    const details = [
+      error?.message,
+      error?.code ? `code: ${error.code}` : null,
+      error?.status ? `status: ${error.status}` : null,
+      error?.name ? `type: ${error.name}` : null,
+    ].filter(Boolean);
+
+    return details.length
+      ? details.join(" | ")
+      : "Unable to create account. Check the browser console for details.";
+  }
+
   useEffect(() => {
     async function loadPayments() {
       if (!user) {
@@ -63,7 +76,7 @@ export default function AccountPage() {
     setLoading(true);
     setMessage("");
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -74,13 +87,20 @@ export default function AccountPage() {
     });
 
     if (error) {
-      setMessage(error.message);
+      console.error("Supabase signup failed", {
+        message: error.message,
+        code: error.code,
+        status: error.status,
+        name: error.name,
+        error,
+      });
+      setMessage(getAuthErrorMessage(error));
       setLoading(false);
       return;
     }
 
     try {
-      await fetch("/send-account-confirmation", {
+      const response = await fetch("/send-account-confirmation", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -90,9 +110,29 @@ export default function AccountPage() {
           username: username.trim(),
         }),
       });
+
+      const emailData = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        console.warn("Brevo account email failed", {
+          status: response.status,
+          data: emailData,
+        });
+      } else {
+        console.info("Brevo account email queued", {
+          messageId: emailData?.messageId,
+        });
+      }
     } catch {
-      // Account creation should not fail if the extra email notification fails.
+      console.warn("Brevo account email request failed.");
     }
+
+    console.info("Supabase signup completed", {
+      userId: data?.user?.id,
+      emailConfirmedAt: data?.user?.email_confirmed_at,
+      confirmationSent:
+        Boolean(data?.user) && data?.user?.email_confirmed_at === null,
+    });
 
     setMessage(
       "Account created. Check your inbox for account and verification emails.",
