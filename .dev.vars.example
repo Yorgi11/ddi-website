@@ -1,0 +1,10 @@
+SUPABASE_URL=https://your-project-ref.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key
+PAYPAL_CLIENT_ID=your_paypal_client_id
+PAYPAL_CLIENT_SECRET=your_paypal_client_secret
+PAYPAL_ENVIRONMENT=sandbox
+DOMAIN=http://127.0.0.1:8787
+BREVO_API_KEY=xkeysib-your_brevo_api_key
+BREVO_SENDER_EMAIL=no-reply@yourdomain.com
+BREVO_SENDER_NAME=Digital Development Institute

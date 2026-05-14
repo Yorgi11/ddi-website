@@ -79,7 +79,24 @@ export default function AccountPage() {
       return;
     }
 
-    setMessage("Account created. Check your email if confirmation is enabled.");
+    try {
+      await fetch("/send-account-confirmation", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email.trim(),
+          username: username.trim(),
+        }),
+      });
+    } catch {
+      // Account creation should not fail if the extra email notification fails.
+    }
+
+    setMessage(
+      "Account created. Check your inbox for account and verification emails.",
+    );
     setLoading(false);
   }
 

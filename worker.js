@@ -1,10 +1,12 @@
 import { onRequestPost as createCheckoutSession } from "./functions/create-checkout-session.js";
 import { onRequestPost as createPayPalOrder } from "./functions/create-paypal-order.js";
+import { onRequestPost as sendAccountConfirmation } from "./functions/send-account-confirmation.js";
 import { onRequestPost as verifyOnlinePayment } from "./functions/verify-online-payment.js";
 
 const routes = {
   "/create-checkout-session": createCheckoutSession,
   "/create-paypal-order": createPayPalOrder,
+  "/send-account-confirmation": sendAccountConfirmation,
   "/verify-online-payment": verifyOnlinePayment,
 };
 
