@@ -141,7 +141,7 @@ export default function ProgramDetailsPage({ program }) {
       <div className={va.layout.detailsGrid}>
         <SectionCard
           title={program.name}
-          description={`${program.grades} • ${program.ages} • ${program.timeline}`}
+          description={`${program.grades} / ${program.ages} / ${program.timeline}`}
         >
           <div className={va.spacing.stackGap}>
             <div>

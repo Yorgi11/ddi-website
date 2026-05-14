@@ -6,6 +6,7 @@ export default function SectionCard({
   children,
   fullHeight = false,
   minHeight = null,
+  headerSpacing = va.spacing.marginBottomLarge,
 }) {
   return (
     <section
@@ -21,7 +22,7 @@ export default function SectionCard({
       }}
     >
       {(title || description) && (
-        <div className={va.spacing.marginBottomLarge}>
+        <div className={headerSpacing}>
           {title && (
             <h2
               className={va.text.sectionTitleFont}

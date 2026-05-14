@@ -16,8 +16,8 @@ body {
     BlinkMacSystemFont,
     "Segoe UI",
     sans-serif;
-  background: #000000;
-  color: #ffffff;
+  background: #f8fafc;
+  color: #0f172a;
 }
 
 * {
@@ -27,6 +27,14 @@ body {
 button,
 input {
   font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
 }
 
 input::placeholder {

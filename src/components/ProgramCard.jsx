@@ -25,8 +25,8 @@ export default function ProgramCard({ program, onView }) {
         <div
           className={va.misc.roundedPill}
           style={{
-            backgroundColor: va.colors.secondaryColorDark,
-            color: va.colors.primaryText,
+            backgroundColor: va.colors.secondaryTextDark,
+            color: va.colors.primaryColorDark,
             border: `1px solid ${va.colors.borderColor}`,
           }}
         >
@@ -38,7 +38,7 @@ export default function ProgramCard({ program, onView }) {
         className={`${va.spacing.marginBottomMedium} ${va.text.smallFont}`}
         style={{ color: va.colors.primaryTextDark }}
       >
-        {program.grades} • {program.ages} • {program.timeline}
+        {program.grades} / {program.ages} / {program.timeline}
       </div>
 
       <p

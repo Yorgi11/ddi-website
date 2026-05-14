@@ -11,6 +11,7 @@ import ContactPage from "./pages/ContactPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ETransferPage from "./pages/ETransferPage";
 import PaymentConfirmPage from "./pages/PaymentConfirmPage";
+import PaymentSuccessPage from "./pages/PaymentSuccessPage";
 import AdminPage from "./pages/AdminPage";
 import AdminRoute from "./components/AdminRoute";
 import DashboardPage from "./pages/DashboardPage";
@@ -105,6 +106,7 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/payment-success" element={<PaymentSuccessPage />} />
         <Route path="/account" element={<AccountPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route

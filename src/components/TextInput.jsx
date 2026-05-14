@@ -18,7 +18,7 @@ export default function TextInput({
         backgroundColor: va.colors.surfaceColor,
         color: va.colors.primaryText,
         borderColor: va.colors.borderColor,
-        "--placeholder-color": va.colors.secondaryColorDark,
+        "--placeholder-color": va.colors.primaryTextDark,
       }}
     />
   );

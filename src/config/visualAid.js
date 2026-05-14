@@ -1,24 +1,24 @@
 export const visualAid = {
   colors: {
-    primaryColor: "#2cff05",
-    primaryColorDark: "#1fa105",
+    primaryColor: "#2563eb",
+    primaryColorDark: "#1d4ed8",
 
-    secondaryColor: "#bf00ff",
-    secondaryColorDark: "#8802b4",
+    secondaryColor: "#14b8a6",
+    secondaryColorDark: "#0f766e",
 
-    pageColor: "#000000",
-    surfaceColor: "#2d2d2d",
+    pageColor: "#f8fafc",
+    surfaceColor: "#ffffff",
 
-    primaryText: "#ffffff",
-    primaryTextDark: "#a1a1aa",
+    primaryText: "#0f172a",
+    primaryTextDark: "#475569",
 
-    secondaryText: "#4e4e4e",
-    secondaryTextDark: "#242424",
+    secondaryText: "#ffffff",
+    secondaryTextDark: "#dbeafe",
 
-    borderColor: "#4e4e4e",
+    borderColor: "#cbd5e1",
 
-    successColor: "#2cff05",
-    warningColor: "#ff4d4d",
+    successColor: "#059669",
+    warningColor: "#dc2626",
   },
 
   text: {
@@ -57,10 +57,10 @@ export const visualAid = {
   },
 
   panels: {
-    primaryPanel: "rounded-3xl border shadow-sm",
-    secondaryPanel: "rounded-2xl border",
-    mutedPanel: "rounded-2xl border",
-    dashedPanel: "rounded-2xl border border-dashed",
+    primaryPanel: "rounded-lg border shadow-sm",
+    secondaryPanel: "rounded-lg border",
+    mutedPanel: "rounded-lg border",
+    dashedPanel: "rounded-lg border border-dashed",
   },
 
   textStyles: {
@@ -92,10 +92,10 @@ export const visualAid = {
 
   buttons: {
     primaryButton:
-      "inline-flex items-center justify-center rounded-2xl px-4 py-2 transition hover:opacity-90",
+      "inline-flex items-center justify-center rounded-lg px-4 py-2 transition hover:opacity-90",
     secondaryButton:
-      "inline-flex items-center justify-center rounded-2xl border px-4 py-2 transition",
-    optionButton: "rounded-2xl border px-4 py-3 text-left transition",
+      "inline-flex items-center justify-center rounded-lg border px-4 py-2 transition",
+    optionButton: "rounded-lg border px-4 py-3 text-left transition",
     fullWidthButton: "w-full",
     disabledButton: "disabled:cursor-not-allowed disabled:opacity-50",
   },
@@ -130,18 +130,18 @@ export const visualAid = {
   },
 
   forms: {
-    inputBase: "w-full rounded-2xl border px-4 py-3",
-    inputInline: "rounded-2xl border px-4 py-3",
-    choiceButton: "rounded-2xl border px-4 py-3 text-left",
-    checkboxPanel: "flex items-start gap-3 rounded-2xl border p-4",
+    inputBase: "w-full rounded-lg border px-4 py-3",
+    inputInline: "rounded-lg border px-4 py-3",
+    choiceButton: "rounded-lg border px-4 py-3 text-left",
+    checkboxPanel: "flex items-start gap-3 rounded-lg border p-4",
     activeRing: "ring-2",
-    inputPlaceholder: "placeholder:text-[#bf00ff]",
+    inputPlaceholder: "placeholder:text-[#64748b]",
   },
 
   icons: {
     small: "h-4 w-4",
     medium: "h-5 w-5",
-    logoBox: "flex h-10 w-10 items-center justify-center rounded-2xl shadow",
+    logoBox: "flex h-10 w-10 items-center justify-center rounded-lg shadow",
   },
 
   misc: {
