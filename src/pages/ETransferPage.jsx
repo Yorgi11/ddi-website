@@ -81,7 +81,11 @@ export default function ETransferPage() {
           </div>
 
           <div style={va.textStyles.bodyText(va.colors.primaryText)}>
-            Program: {payment.program_id}
+            Item:{" "}
+            {payment.class_section_id ||
+              payment.course_level_id ||
+              payment.course_id ||
+              "Course payment"}
           </div>
 
           <div style={va.textStyles.bodyText(va.colors.primaryText)}>

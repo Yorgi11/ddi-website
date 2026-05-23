@@ -60,6 +60,12 @@ export async function onRequestPost(context) {
     }
 
     const accessToken = await getPayPalAccessToken(context.env);
+    const description = payment.class_section_id
+      ? `Digital Development Institute - Class ${payment.class_section_id}`
+      : `Digital Development Institute - Course`;
+    const cancelUrl = payment.class_section_id
+      ? `${domain}/checkout/class/${payment.class_section_id}`
+      : `${domain}/courses`;
     const response = await fetch(
       `${getPayPalBaseUrl(context.env)}/v2/checkout/orders`,
       {
@@ -75,7 +81,7 @@ export async function onRequestPost(context) {
             {
               reference_id: payment.id,
               custom_id: payment.id,
-              description: `Digital Development Institute - ${payment.program_id}`,
+              description,
               amount: {
                 currency_code: "CAD",
                 value: toMoneyString(payment.total),
@@ -90,7 +96,7 @@ export async function onRequestPost(context) {
                 shipping_preference: "NO_SHIPPING",
                 user_action: "PAY_NOW",
                 return_url: `${domain}/payment-success?provider=paypal&payment_id=${payment.id}`,
-                cancel_url: `${domain}/checkout/${payment.program_id}`,
+                cancel_url: cancelUrl,
               },
             },
           },

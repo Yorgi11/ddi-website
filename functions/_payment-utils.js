@@ -75,25 +75,6 @@ export async function fetchPayment(supabase, paymentId) {
   return data;
 }
 
-function getDerivedCurrentLevel(profile) {
-  if (!profile) return 1;
-
-  const completed = profile.completed_levels ?? [];
-  const placement = profile.placement_access ?? [];
-
-  let level = 1;
-
-  if (completed.includes("level1") || placement.includes("level2")) {
-    level = Math.max(level, 2);
-  }
-
-  if (completed.includes("level2") || placement.includes("level3")) {
-    level = Math.max(level, 3);
-  }
-
-  return level;
-}
-
 export async function confirmPayment(supabase, payment, updates = {}) {
   const { error: paymentError } = await supabase
     .from("payments")
@@ -107,48 +88,18 @@ export async function confirmPayment(supabase, payment, updates = {}) {
     throw paymentError;
   }
 
-  const { data: profileData, error: profileFetchError } = await supabase
-    .from("profiles")
-    .select("levels_paid_for,current_level,completed_levels,placement_access")
-    .eq("id", payment.user_id)
-    .maybeSingle();
+  if (payment.enrollment_id) {
+    const { error: enrollmentError } = await supabase
+      .from("enrollments")
+      .update({
+        status: "enrolled",
+      })
+      .eq("id", payment.enrollment_id);
 
-  if (profileFetchError) {
-    throw profileFetchError;
-  }
+    if (enrollmentError) {
+      throw enrollmentError;
+    }
 
-  const existingLevels = profileData?.levels_paid_for ?? [];
-  const nextLevels = existingLevels.includes(payment.program_id)
-    ? existingLevels
-    : [...existingLevels, payment.program_id];
-
-  const nextProfile = {
-    ...profileData,
-    levels_paid_for: nextLevels,
-  };
-
-  const { error: profileUpdateError } = await supabase
-    .from("profiles")
-    .update({
-      levels_paid_for: nextLevels,
-      current_level: getDerivedCurrentLevel(nextProfile),
-    })
-    .eq("id", payment.user_id);
-
-  if (profileUpdateError) {
-    throw profileUpdateError;
-  }
-
-  const { error: statusError } = await supabase.from("program_status").upsert(
-    {
-      user_id: payment.user_id,
-      program_id: payment.program_id,
-      status: "paid",
-    },
-    { onConflict: "user_id,program_id" },
-  );
-
-  if (statusError) {
-    throw statusError;
+    return;
   }
 }

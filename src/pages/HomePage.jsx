@@ -7,10 +7,8 @@ import {
   ShieldCheck,
   WalletCards,
 } from "lucide-react";
-import { PROGRAMS } from "../data/programs";
 import { visualAid as va } from "../config/visualAid";
 import PageContainer from "../components/PageContainer";
-import ProgramCard from "../components/ProgramCard";
 import SectionCard from "../components/SectionCard";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -27,8 +25,8 @@ export default function HomePage() {
     <PageContainer className={va.spacing.pageStack}>
       <section className={va.layout.twoColumn}>
         <SectionCard
-          title="Programming and game development programs for serious learners."
-          description="Students create an account, choose the right level, enroll online, and move through a structured path from coding fundamentals to portfolio-ready work."
+          title="Programming and game development courses for serious learners."
+          description="Students create an account, choose a course, enroll in an open class section, and move through a structured path from coding fundamentals to portfolio-ready work."
           fullHeight
           minHeight="300px"
           headerSpacing={va.spacing.marginBottomLarge}
@@ -42,7 +40,7 @@ export default function HomePage() {
           >
             <div style={va.textStyles.bodyTextThin(va.colors.primaryTextDark)}>
               DDI combines practical instruction, progression rules, and a
-              student portal so enrollment, payment, and course access stay in
+              student dashboard so enrollment, payment, and course access stay in
               one place.
             </div>
             <div
@@ -50,14 +48,14 @@ export default function HomePage() {
               style={{ marginTop: "auto", paddingTop: "16px" }}
             >
               <button
-                onClick={() => navigate("/programs")}
+                onClick={() => navigate("/courses")}
                 className={va.buttons.primaryButton}
                 style={{
                   backgroundColor: va.colors.primaryColor,
                   ...va.textStyles.bodyText(va.colors.secondaryText),
                 }}
               >
-                View Programs
+                View Courses
               </button>
 
               <button
@@ -114,7 +112,7 @@ export default function HomePage() {
                 className={va.icons.small}
                 style={{ color: va.colors.secondaryColor }}
               />
-              <span>Remote delivery through Google Classroom</span>
+              <span>Remote and in-person delivery through the DDI Student Dashboard</span>
             </div>
           </div>
         </SectionCard>
@@ -128,8 +126,8 @@ export default function HomePage() {
           {[
             {
               icon: Code2,
-              title: "Choose a level",
-              copy: "Review prerequisites, outcomes, timing, and pricing before checkout.",
+              title: "Choose a course",
+              copy: "Review open sections, outcomes, timing, and pricing before checkout.",
             },
             {
               icon: WalletCards,
@@ -139,7 +137,7 @@ export default function HomePage() {
             {
               icon: ShieldCheck,
               title: "Track access",
-              copy: "The portal keeps program access and payment status connected.",
+              copy: "The dashboard keeps course access and payment status connected.",
             },
           ].map((item) => {
             const Icon = item.icon;
@@ -175,33 +173,12 @@ export default function HomePage() {
         </div>
       </SectionCard>
 
-      <section className={va.spacing.sectionStack}>
-        <div className={va.spacing.textStack}>
-          <h2
-            className={va.text.sectionTitleFont}
-            style={{ color: va.colors.primaryText }}
-          >
-            Programs
-          </h2>
-
-          <p
-            className={va.text.smallFont}
-            style={{ color: va.colors.primaryTextDark }}
-          >
-            Choose a level to see more details and begin checkout.
-          </p>
-        </div>
-
-        <div className={va.layout.programGrid}>
-          {PROGRAMS.map((program) => (
-            <ProgramCard
-              key={program.id}
-              program={program}
-              onView={(id) => navigate(`/programs/${id}`)}
-            />
-          ))}
-        </div>
-      </section>
+      <SectionCard
+        title="Courses"
+        description="Browse DDI course tracks, open class sections, and LMS-managed learning paths."
+      >
+        <PrimaryCoursesLink onClick={() => navigate("/courses")} />
+      </SectionCard>
 
       <SectionCard
         title="Payments"
@@ -249,9 +226,26 @@ export default function HomePage() {
             </a>
           </div>
           <div>Location: Greater Toronto Area</div>
-          <div>Delivery: Remote via Google Classroom</div>
+          <div>
+            Delivery: Remote and in-person through the DDI Student Dashboard
+          </div>
         </div>
       </SectionCard>
     </PageContainer>
+  );
+}
+
+function PrimaryCoursesLink({ onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className={va.buttons.primaryButton}
+      style={{
+        backgroundColor: va.colors.primaryColor,
+        ...va.textStyles.bodyText(va.colors.secondaryText),
+      }}
+    >
+      Browse Courses
+    </button>
   );
 }

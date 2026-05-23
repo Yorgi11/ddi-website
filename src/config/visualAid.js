@@ -110,7 +110,7 @@ export const visualAid = {
     accountGrid: "grid gap-6 lg:grid-cols-[1fr_.9fr]",
     checkoutGrid: "grid gap-6 lg:grid-cols-[1.2fr_.8fr]",
     detailsGrid: "grid gap-6 lg:grid-cols-[1.4fr_.8fr]",
-    programGrid: "grid gap-4 md:grid-cols-3",
+    courseGrid: "grid gap-4 md:grid-cols-3",
 
     flexWrapRow: "flex flex-wrap gap-3",
     iconRow: "flex items-center gap-2",

@@ -7,7 +7,6 @@ import PageContainer from "../components/PageContainer";
 import SectionCard from "../components/SectionCard";
 import PrimaryButton from "../components/PrimaryButton";
 import TextInput from "../components/TextInput";
-import { getDerivedCurrentLevel } from "../lib/profileProgress";
 
 export default function PaymentConfirmPage() {
   const { paymentId } = useParams();
@@ -24,95 +23,37 @@ export default function PaymentConfirmPage() {
     setSubmitting(true);
     setMessage("");
 
-    const { data, error } = await supabase
-      .from("payments")
-      .select("*")
-      .eq("id", paymentId)
-      .eq("user_id", user.id)
-      .single();
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
 
-    if (error || !data) {
-      setMessage("Payment not found.");
+    if (!token) {
+      setMessage("Please log in before confirming payment.");
       setSubmitting(false);
       return;
     }
 
-    if (data.status === "confirmed") {
-      setMessage("This payment is already confirmed.");
-      setSubmitting(false);
-      return;
-    }
-
-    if (data.confirmation_code !== code.trim()) {
-      setMessage("Invalid confirmation code.");
-      setSubmitting(false);
-      return;
-    }
-
-    const { error: updateError } = await supabase
-      .from("payments")
-      .update({ status: "confirmed" })
-      .eq("id", paymentId)
-      .eq("user_id", user.id);
-
-    if (updateError) {
-      setMessage(updateError.message);
-      setSubmitting(false);
-      return;
-    }
-
-    const { data: profileData, error: profileFetchError } = await supabase
-      .from("profiles")
-      .select("levels_paid_for, current_level")
-      .eq("id", user.id)
-      .single();
-
-    if (profileFetchError) {
-      setMessage(profileFetchError.message);
-      setSubmitting(false);
-      return;
-    }
-
-    const existingLevels = profileData?.levels_paid_for ?? [];
-    const nextLevels = existingLevels.includes(data.program_id)
-      ? existingLevels
-      : [...existingLevels, data.program_id];
-
-    const nextProfile = {
-      ...profileData,
-      levels_paid_for: nextLevels,
-    };
-
-    const nextCurrentLevel = getDerivedCurrentLevel(nextProfile);
-
-    const { error: profileUpdateError } = await supabase
-      .from("profiles")
-      .update({
-        levels_paid_for: nextLevels,
-        current_level: nextCurrentLevel,
-      })
-      .eq("id", user.id);
-
-    if (profileUpdateError) {
-      setMessage(profileUpdateError.message);
-      setSubmitting(false);
-      return;
-    }
-
-    const { error: statusError } = await supabase.from("program_status").upsert(
-      {
-        user_id: user.id,
-        program_id: data.program_id,
-        status: "paid",
+    const response = await fetch("/confirm-manual-payment", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-      { onConflict: "user_id,program_id" },
-    );
+      body: JSON.stringify({
+        paymentId,
+        confirmationCode: code.trim(),
+      }),
+    });
+    const result = await response.json();
 
-    if (statusError) {
-      setMessage(statusError.message);
+    if (!response.ok) {
+      setMessage(result.error || "Unable to confirm payment.");
       setSubmitting(false);
       return;
     }
+
+    setMessage("Payment confirmed. Your access has been updated.");
+    setSubmitting(false);
+    navigate("/dashboard");
   }
 
   return (

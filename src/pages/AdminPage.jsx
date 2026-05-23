@@ -7,7 +7,7 @@ import SectionCard from "../components/SectionCard";
 import TextInput from "../components/TextInput";
 import PrimaryButton from "../components/PrimaryButton";
 import SecondaryButton from "../components/SecondaryButton";
-import { getDerivedCurrentLevel } from "../lib/profileProgress";
+import AdminLmsManager from "../components/admin/AdminLmsManager";
 
 export default function AdminPage() {
   const { profile } = useAuth();
@@ -74,151 +74,12 @@ export default function AdminPage() {
     return true;
   }
 
-  async function markLevelComplete(level) {
-    if (!selectedProfile) {
-      setMessage("Load a profile first.");
-      return;
-    }
-
-    const completedLevels = selectedProfile.completed_levels ?? [];
-    const nextCompleted = completedLevels.includes(level)
-      ? completedLevels
-      : [...completedLevels, level];
-
-    const nextProfile = {
-      ...selectedProfile,
-      completed_levels: nextCompleted,
-    };
-
-    const nextCurrentLevel = getDerivedCurrentLevel(nextProfile);
-
-    const profileUpdated = await updateProfile(
-      {
-        completed_levels: nextCompleted,
-        current_level: nextCurrentLevel,
-      },
-      `${level} marked as completed.`,
-    );
-
-    if (!profileUpdated) return;
-
-    const { error: statusError } = await supabase.from("program_status").upsert(
-      {
-        user_id: selectedProfile.id,
-        program_id: level,
-        status: "completed",
-      },
-      { onConflict: "user_id,program_id" },
-    );
-
-    if (statusError) {
-      setMessage(statusError.message);
-      return;
-    }
-  }
-
-  async function grantPlacementAccess(level) {
-    if (!selectedProfile) {
-      setMessage("Load a profile first.");
-      return;
-    }
-
-    const placementAccess = selectedProfile.placement_access ?? [];
-    const nextPlacement = placementAccess.includes(level)
-      ? placementAccess
-      : [...placementAccess, level];
-
-    const nextProfile = {
-      ...selectedProfile,
-      placement_access: nextPlacement,
-    };
-
-    const nextCurrentLevel = getDerivedCurrentLevel(nextProfile);
-
-    await updateProfile(
-      {
-        placement_access: nextPlacement,
-        current_level: nextCurrentLevel,
-      },
-      `Placement access granted for ${level}.`,
-    );
-  }
-
-  async function revokePlacementAccess(level) {
-    if (!selectedProfile) {
-      setMessage("Load a profile first.");
-      return;
-    }
-
-    const placementAccess = selectedProfile.placement_access ?? [];
-    const nextPlacement = placementAccess.filter((item) => item !== level);
-
-    const nextProfile = {
-      ...selectedProfile,
-      placement_access: nextPlacement,
-    };
-
-    const nextCurrentLevel = getDerivedCurrentLevel(nextProfile);
-
-    await updateProfile(
-      {
-        placement_access: nextPlacement,
-        current_level: nextCurrentLevel,
-      },
-      `Placement access removed for ${level}.`,
-    );
-  }
-
-  async function removeCompletedLevel(level) {
-    if (!selectedProfile) {
-      setMessage("Load a profile first.");
-      return;
-    }
-
-    const completedLevels = selectedProfile.completed_levels ?? [];
-    const nextCompleted = completedLevels.filter((item) => item !== level);
-
-    const nextProfile = {
-      ...selectedProfile,
-      completed_levels: nextCompleted,
-    };
-
-    const nextCurrentLevel = getDerivedCurrentLevel(nextProfile);
-
-    const profileUpdated = await updateProfile(
-      {
-        completed_levels: nextCompleted,
-        current_level: nextCurrentLevel,
-      },
-      `${level} removed from completed levels.`,
-    );
-
-    if (!profileUpdated) return;
-
-    const paidLevels = selectedProfile.levels_paid_for ?? [];
-    const nextStatus = paidLevels.includes(level) ? "paid" : "not_started";
-
-    const { error: statusError } = await supabase.from("program_status").upsert(
-      {
-        user_id: selectedProfile.id,
-        program_id: level,
-        status: nextStatus,
-      },
-      { onConflict: "user_id,program_id" },
-    );
-
-    if (statusError) {
-      setMessage(statusError.message);
-      return;
-    }
-  }
-
   return (
     <PageContainer>
       <div className={va.spacing.pageStack}>
         <SectionCard
           title="Admin"
-          description="Load a user profile and manage level completion or placement access."
+          description="Load a user profile, manage roles, and maintain LMS courses."
         >
           <div className={va.spacing.sectionStack}>
             {profile?.is_admin && (
@@ -261,113 +122,49 @@ export default function AdminPage() {
               >
                 <div>Username: {selectedProfile.username ?? "None"}</div>
                 <div>Email: {selectedProfile.email ?? "None"}</div>
-                <div>Current Level: {selectedProfile.current_level ?? 1}</div>
-                <div>
-                  Levels Paid For:{" "}
-                  {selectedProfile.levels_paid_for?.join(", ") || "None"}
-                </div>
-                <div>
-                  Completed Levels:{" "}
-                  {selectedProfile.completed_levels?.join(", ") || "None"}
-                </div>
-                <div>
-                  Placement Access:{" "}
-                  {selectedProfile.placement_access?.join(", ") || "None"}
-                </div>
                 <div>Admin: {selectedProfile.is_admin ? "Yes" : "No"}</div>
+                <div>
+                  Instructor: {selectedProfile.is_instructor ? "Yes" : "No"}
+                </div>
               </div>
             </SectionCard>
 
             <SectionCard
-              title="Completion Controls"
-              description="Mark or remove completed levels."
+              title="Role Controls"
+              description="Grant or revoke instructor access for the LMS."
             >
               <div className={va.spacing.sectionStack}>
                 <PrimaryButton
                   fullWidth
-                  onClick={() => markLevelComplete("level1")}
+                  onClick={() =>
+                    updateProfile(
+                      { is_instructor: true },
+                      "Instructor access granted.",
+                    )
+                  }
                   disabled={loading}
                 >
-                  Mark Level 1 Complete
-                </PrimaryButton>
-
-                <PrimaryButton
-                  fullWidth
-                  onClick={() => markLevelComplete("level2")}
-                  disabled={loading}
-                >
-                  Mark Level 2 Complete
-                </PrimaryButton>
-
-                <PrimaryButton
-                  fullWidth
-                  onClick={() => markLevelComplete("level3")}
-                  disabled={loading}
-                >
-                  Mark Level 3 Complete
+                  Grant Instructor Access
                 </PrimaryButton>
 
                 <SecondaryButton
                   fullWidth
-                  onClick={() => removeCompletedLevel("level1")}
+                  onClick={() =>
+                    updateProfile(
+                      { is_instructor: false },
+                      "Instructor access revoked.",
+                    )
+                  }
                 >
-                  Remove Level 1 Completion
-                </SecondaryButton>
-
-                <SecondaryButton
-                  fullWidth
-                  onClick={() => removeCompletedLevel("level2")}
-                >
-                  Remove Level 2 Completion
-                </SecondaryButton>
-
-                <SecondaryButton
-                  fullWidth
-                  onClick={() => removeCompletedLevel("level3")}
-                >
-                  Remove Level 3 Completion
+                  Revoke Instructor Access
                 </SecondaryButton>
               </div>
             </SectionCard>
 
-            <SectionCard
-              title="Placement Controls"
-              description="Grant or revoke placement-based access."
-            >
-              <div className={va.spacing.sectionStack}>
-                <PrimaryButton
-                  fullWidth
-                  onClick={() => grantPlacementAccess("level2")}
-                  disabled={loading}
-                >
-                  Grant Placement Access Level 2
-                </PrimaryButton>
-
-                <PrimaryButton
-                  fullWidth
-                  onClick={() => grantPlacementAccess("level3")}
-                  disabled={loading}
-                >
-                  Grant Placement Access Level 3
-                </PrimaryButton>
-
-                <SecondaryButton
-                  fullWidth
-                  onClick={() => revokePlacementAccess("level2")}
-                >
-                  Revoke Placement Access Level 2
-                </SecondaryButton>
-
-                <SecondaryButton
-                  fullWidth
-                  onClick={() => revokePlacementAccess("level3")}
-                >
-                  Revoke Placement Access Level 3
-                </SecondaryButton>
-              </div>
-            </SectionCard>
           </>
         )}
+
+        <AdminLmsManager />
       </div>
     </PageContainer>
   );

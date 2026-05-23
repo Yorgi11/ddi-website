@@ -32,6 +32,9 @@ export async function onRequestPost(context) {
     const buyerName = [payment.first_name, payment.last_name]
       .filter(Boolean)
       .join(" ");
+    const productName = payment.class_section_id
+      ? `Digital Development Institute - Class ${payment.class_section_id}`
+      : `Digital Development Institute - Course`;
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
@@ -41,14 +44,15 @@ export async function onRequestPost(context) {
       metadata: {
         payment_id: payment.id,
         user_id: payment.user_id,
-        program_id: payment.program_id,
+        course_id: payment.course_id,
+        class_section_id: payment.class_section_id,
       },
       line_items: [
         {
           price_data: {
             currency: "cad",
             product_data: {
-              name: `Digital Development Institute - ${payment.program_id}`,
+              name: productName,
               description: buyerName || undefined,
             },
             unit_amount: toCents(payment.total),
@@ -57,7 +61,9 @@ export async function onRequestPost(context) {
         },
       ],
       success_url: `${domain}/payment-success?provider=stripe&payment_id=${payment.id}&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${domain}/checkout/${payment.program_id}`,
+      cancel_url: payment.class_section_id
+        ? `${domain}/checkout/class/${payment.class_section_id}`
+        : `${domain}/courses`,
     });
 
     return jsonResponse({ url: session.url });

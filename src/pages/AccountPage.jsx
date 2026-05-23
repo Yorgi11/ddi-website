@@ -8,6 +8,7 @@ import SecondaryButton from "../components/SecondaryButton";
 import TextInput from "../components/TextInput";
 import { useAuth } from "../context/AuthContext";
 import { useLocation, useNavigate } from "react-router-dom";
+import { fetchStudentEnrollments } from "../lib/lmsApi";
 
 export default function AccountPage() {
   const [mode, setMode] = useState("login");
@@ -20,7 +21,7 @@ export default function AccountPage() {
   const [loading, setLoading] = useState(false);
 
   const [payments, setPayments] = useState([]);
-  const [programStatuses, setProgramStatuses] = useState([]);
+  const [enrollments, setEnrollments] = useState([]);
 
   const { user, profile } = useAuth();
 
@@ -32,6 +33,7 @@ export default function AccountPage() {
     async function loadPayments() {
       if (!user) {
         setPayments([]);
+        setEnrollments([]);
         return;
       }
 
@@ -45,15 +47,11 @@ export default function AccountPage() {
         setPayments(data ?? []);
       }
 
-      const { data: statusData, error: statusError } = await supabase
-        .from("program_status")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("updated_at", { ascending: false });
+      const { enrollments: enrollmentData } = await fetchStudentEnrollments(
+        user.id,
+      );
 
-      if (!statusError) {
-        setProgramStatuses(statusData ?? []);
-      }
+      setEnrollments(enrollmentData);
     }
 
     loadPayments();
@@ -220,15 +218,8 @@ export default function AccountPage() {
               <>
                 <div>Username: {profile?.username ?? "..."}</div>
                 <div>Email: {user.email}</div>
-                <div>Level: {profile?.current_level ?? 1}</div>
-                <div>
-                  Levels paid for:{" "}
-                  {profile?.levels_paid_for?.join(", ") || "None"}
-                </div>
-                <div>
-                  Completed levels:{" "}
-                  {profile?.completed_levels?.join(", ") || "None"}
-                </div>
+                <div>LMS Enrollments: {enrollments.length}</div>
+                <div>Course Path Level: {profile?.current_level ?? 1}</div>
                 <div>
                   Placement access:{" "}
                   {profile?.placement_access?.join(", ") || "None"}
@@ -247,6 +238,41 @@ export default function AccountPage() {
               </>
             ) : (
               <div>Not logged in</div>
+            )}
+          </div>
+        </SectionCard>
+        <SectionCard
+          title="LMS Enrollments"
+          description="Your current course classes in the DDI Student Dashboard."
+        >
+          <div
+            className={va.layout.infoList}
+            style={{ color: va.colors.primaryTextDark }}
+          >
+            {user ? (
+              enrollments.length > 0 ? (
+                enrollments.map((enrollment) => (
+                  <div
+                    key={enrollment.id}
+                    className={va.panels.secondaryPanel}
+                    style={{
+                      backgroundColor: va.colors.surfaceColor,
+                      borderColor: va.colors.borderColor,
+                      padding: "12px",
+                    }}
+                  >
+                    <div>{enrollment.course.title}</div>
+                    <div>
+                      {enrollment.level.title} / {enrollment.section.title}
+                    </div>
+                    <div>Status: {enrollment.status.replaceAll("_", " ")}</div>
+                  </div>
+                ))
+              ) : (
+                <div>No LMS enrollments yet.</div>
+              )
+            ) : (
+              <div>Log in to view LMS enrollments.</div>
             )}
           </div>
         </SectionCard>
@@ -270,7 +296,13 @@ export default function AccountPage() {
                       padding: "12px",
                     }}
                   >
-                    <div>Program: {payment.program_id}</div>
+                    <div>
+                      Item:{" "}
+                      {payment.course_id ||
+                        payment.course_level_id ||
+                        payment.class_section_id ||
+                        "Course payment"}
+                    </div>
                     <div>Total: ${Number(payment.total).toFixed(2)}</div>
                     <div>Method: {payment.payment_method}</div>
                     <div>Status: {payment.status}</div>
@@ -282,38 +314,6 @@ export default function AccountPage() {
               )
             ) : (
               <div>Log in to view payment history.</div>
-            )}
-          </div>
-        </SectionCard>
-        <SectionCard
-          title="Program Status"
-          description="Your current status for each program."
-        >
-          <div
-            className={va.layout.infoList}
-            style={{ color: va.colors.primaryTextDark }}
-          >
-            {user ? (
-              programStatuses.length > 0 ? (
-                programStatuses.map((item) => (
-                  <div
-                    key={item.id}
-                    className={va.panels.secondaryPanel}
-                    style={{
-                      backgroundColor: va.colors.surfaceColor,
-                      borderColor: va.colors.borderColor,
-                      padding: "12px",
-                    }}
-                  >
-                    <div>Program: {item.program_id}</div>
-                    <div>Status: {item.status}</div>
-                  </div>
-                ))
-              ) : (
-                <div>No program status records yet.</div>
-              )
-            ) : (
-              <div>Log in to view program status.</div>
             )}
           </div>
         </SectionCard>

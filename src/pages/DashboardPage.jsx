@@ -6,24 +6,35 @@ import PageContainer from "../components/PageContainer";
 import SectionCard from "../components/SectionCard";
 import PrimaryButton from "../components/PrimaryButton";
 import { useNavigate } from "react-router-dom";
-import { PROGRAMS } from "../data/programs";
-import DashboardProgramCard from "../components/DashboardProgramCard";
 import { buildStudentTimeline } from "../lib/studentTimeline";
 import TimelineItem from "../components/TimelineItem";
-import { getRecommendedAction } from "../lib/recommendedAction";
-import { getPortalSummary } from "../lib/dashboardSummary";
-import PortalSummaryCard from "../components/PortalSummaryCard";
+import {
+  fetchCourseCatalog,
+  fetchStudentAchievements,
+  fetchStudentEnrollments,
+  fetchStudentNotifications,
+} from "../lib/lmsApi";
+import { getCurrentEnrollment, getVisibleCatalogCourses } from "../lib/lmsData";
+import CurrentClassCard from "../components/dashboard/CurrentClassCard";
+import EnrolledCourseCard from "../components/dashboard/EnrolledCourseCard";
+import LmsSummaryCard from "../components/dashboard/LmsSummaryCard";
+import AchievementsCard from "../components/dashboard/AchievementsCard";
+import NotificationsCard from "../components/dashboard/NotificationsCard";
 
 export default function DashboardPage() {
   const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
 
   const [payments, setPayments] = useState([]);
-  const [programStatuses, setProgramStatuses] = useState([]);
+  const [courses, setCourses] = useState([]);
+  const [enrollments, setEnrollments] = useState([]);
+  const [badges, setBadges] = useState([]);
+  const [certificates, setCertificates] = useState([]);
+  const [notifications, setNotifications] = useState([]);
   const [message, setMessage] = useState("");
 
-  const recommendedAction = getRecommendedAction(profile, programStatuses);
-  const portalSummary = getPortalSummary(profile, programStatuses);
+  const currentEnrollment = getCurrentEnrollment(enrollments);
+  const catalogCourses = getVisibleCatalogCourses(courses, enrollments);
 
   async function loadDashboardData() {
     if (!user) return;
@@ -38,24 +49,46 @@ export default function DashboardPage() {
       setPayments(paymentData ?? []);
     }
 
-    const { data: statusData, error: statusError } = await supabase
-      .from("program_status")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("updated_at", { ascending: false });
+    const { enrollments: enrollmentData, error: enrollmentError } =
+      await fetchStudentEnrollments(user.id);
 
-    if (!statusError) {
-      setProgramStatuses(statusData ?? []);
-    }
+    setEnrollments(enrollmentData);
 
-    if (paymentError || statusError) {
+    const { courses: courseData, error: catalogError } =
+      await fetchCourseCatalog();
+
+    setCourses(courseData);
+
+    const {
+      badges: badgeData,
+      certificates: certificateData,
+      error: achievementError,
+    } = await fetchStudentAchievements(user.id);
+
+    setBadges(badgeData);
+    setCertificates(certificateData);
+
+    const {
+      notifications: notificationData,
+      error: notificationError,
+    } = await fetchStudentNotifications(user.id);
+
+    setNotifications(notificationData);
+
+    if (
+      paymentError ||
+      catalogError ||
+      enrollmentError ||
+      achievementError ||
+      notificationError
+    ) {
       setMessage("Some dashboard data could not be loaded.");
     }
   }
   const timelineItems = buildStudentTimeline(
     profile,
     payments,
-    programStatuses,
+    enrollments,
   );
   useEffect(() => {
     loadDashboardData();
@@ -106,79 +139,50 @@ export default function DashboardPage() {
           >
             <div>Username: {profile?.username ?? "..."}</div>
             <div>Email: {user.email}</div>
-            <div>Current Level: {profile?.current_level ?? 1}</div>
-            <div>
-              Placement Access:{" "}
-              {profile?.placement_access?.join(", ") || "None"}
-            </div>
+            <div>LMS Enrollments: {enrollments.length}</div>
+            <div>Course Path Level: {profile?.current_level ?? 1}</div>
           </div>
         </SectionCard>
-        <PortalSummaryCard summary={portalSummary} />
+        <LmsSummaryCard enrollments={enrollments} />
+        <CurrentClassCard enrollment={currentEnrollment} />
+        <NotificationsCard
+          notifications={notifications}
+          onChanged={loadDashboardData}
+        />
         <SectionCard
-          title="Next Recommended Action"
-          description="The best next step for your account right now."
+          title="Enrolled Courses"
+          description="Your active DDI LMS courses and class sections."
         >
-          <div className={va.spacing.sectionStack}>
-            <div style={va.textStyles.bodyText(va.colors.primaryText)}>
-              {recommendedAction.title}
-            </div>
-
-            <div style={va.textStyles.bodyTextThin(va.colors.primaryTextDark)}>
-              {recommendedAction.description}
-            </div>
-
-            <PrimaryButton
-              fullWidth
-              onClick={() => navigate(recommendedAction.path)}
-            >
-              {recommendedAction.buttonLabel}
+          <div className={va.layout.infoList}>
+            {enrollments.length > 0 ? (
+              enrollments.slice(0, 3).map((enrollment) => (
+                <EnrolledCourseCard
+                  key={enrollment.id}
+                  enrollment={enrollment}
+                />
+              ))
+            ) : (
+              <div style={va.textStyles.bodyTextThin(va.colors.primaryTextDark)}>
+                No LMS enrollments yet. Apply the LMS migration and create class
+                sections to populate this area.
+              </div>
+            )}
+            <PrimaryButton fullWidth onClick={() => navigate("/dashboard/courses")}>
+              View All Courses
             </PrimaryButton>
           </div>
         </SectionCard>
         <SectionCard
-          title="Program Status"
-          description="Your current status for each program."
+          title="Course Catalog"
+          description="DDI course tracks visible in the LMS foundation."
         >
-          <div
-            className={va.layout.infoList}
-            style={{ color: va.colors.primaryTextDark }}
-          >
-            {programStatuses.length > 0 ? (
-              programStatuses.map((item) => (
-                <div
-                  key={item.id}
-                  className={va.panels.secondaryPanel}
-                  style={{
-                    backgroundColor: va.colors.surfaceColor,
-                    borderColor: va.colors.borderColor,
-                    padding: "12px",
-                  }}
-                >
-                  <div>Program: {item.program_id}</div>
-                  <div>Status: {item.status}</div>
-                </div>
-              ))
-            ) : (
-              <div>No program status records yet.</div>
-            )}
-          </div>
-        </SectionCard>
-        <SectionCard
-          title="Programs"
-          description="Your available and locked program options."
-        >
-          <div className={va.layout.programGrid}>
-            {PROGRAMS.map((program) => (
-              <DashboardProgramCard
-                key={program.id}
-                program={program}
-                profile={profile}
-                programStatuses={programStatuses}
-                onStatusChanged={loadDashboardData}
-              />
+          <div className={va.layout.courseGrid}>
+            {catalogCourses.slice(0, 3).map((course) => (
+              <EnrolledCourseCard key={course.id} course={course} />
             ))}
           </div>
         </SectionCard>
+        <AchievementsCard badges={badges} certificates={certificates} />
         <SectionCard
           title="Progress Timeline"
           description="A timeline of your account, payments, and course progress."
@@ -219,7 +223,13 @@ export default function DashboardPage() {
                     padding: "12px",
                   }}
                 >
-                  <div>Program: {payment.program_id}</div>
+                  <div>
+                    Item:{" "}
+                    {payment.course_id ||
+                      payment.course_level_id ||
+                      payment.class_section_id ||
+                      "Course payment"}
+                  </div>
                   <div>Total: ${Number(payment.total).toFixed(2)}</div>
                   <div>Method: {payment.payment_method}</div>
                   <div>Status: {payment.status}</div>

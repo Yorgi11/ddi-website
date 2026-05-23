@@ -1,7 +1,7 @@
 export function buildStudentTimeline(
   profile,
   payments = [],
-  programStatuses = [],
+  enrollments = [],
 ) {
   const items = [];
 
@@ -15,45 +15,51 @@ export function buildStudentTimeline(
   }
 
   for (const payment of payments) {
+    const itemId =
+      payment.class_section_id ||
+      payment.course_level_id ||
+      payment.course_id ||
+      "Course payment";
+
     items.push({
       date: payment.created_at,
       title: `Payment ${payment.status === "confirmed" ? "Confirmed" : "Created"}`,
-      description: `${payment.program_id} • ${payment.payment_method} • $${Number(payment.total).toFixed(2)}`,
+      description: `${itemId} / ${payment.payment_method} / $${Number(payment.total).toFixed(2)}`,
       type: "payment",
     });
   }
 
-  for (const status of programStatuses) {
-    let title = "Program Updated";
-    let description = `${status.program_id}`;
+  for (const enrollment of enrollments) {
+    const courseTitle = enrollment.course?.title ?? "Course";
+    const levelTitle = enrollment.level?.title ?? "Class level";
+    const sectionTitle = enrollment.section?.title ?? "Class section";
+    let title = "Class Enrollment Updated";
+    let description = `${courseTitle} / ${levelTitle} / ${sectionTitle}`;
+    let date = enrollment.createdAt;
 
-    if (status.status === "paid") {
-      title = "Program Purchased";
-      description = `${status.program_id} is paid and ready to begin.`;
+    if (["paid", "enrolled", "in_progress"].includes(enrollment.status)) {
+      title = "Class Enrollment Active";
+      description = `${courseTitle} is available in your dashboard.`;
     }
 
-    if (status.status === "in_progress") {
-      title = "Program Started";
-      description = `${status.program_id} is currently in progress.`;
-    }
-
-    if (status.status === "completed") {
-      title = "Program Completed";
-      description = `${status.program_id} has been completed.`;
+    if (enrollment.status === "completed") {
+      title = "Class Level Completed";
+      description = `${levelTitle} has been completed.`;
+      date = enrollment.completedAt || enrollment.createdAt;
     }
 
     items.push({
-      date: status.updated_at,
+      date,
       title,
       description,
-      type: "program",
+      type: "course",
     });
   }
 
   if ((profile?.completed_levels ?? []).includes("level1")) {
     items.push({
       date: new Date().toISOString(),
-      title: "Level 2 Unlocked",
+      title: "Course Path Level 2 Unlocked",
       description: "You now meet the completion path requirement for Level 2.",
       type: "unlock",
     });
@@ -62,7 +68,7 @@ export function buildStudentTimeline(
   if ((profile?.completed_levels ?? []).includes("level2")) {
     items.push({
       date: new Date().toISOString(),
-      title: "Level 3 Unlocked",
+      title: "Course Path Level 3 Unlocked",
       description: "You now meet the completion path requirement for Level 3.",
       type: "unlock",
     });

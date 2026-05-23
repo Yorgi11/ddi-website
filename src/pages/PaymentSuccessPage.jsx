@@ -48,7 +48,7 @@ export default function PaymentSuccessPage() {
         if (!isMounted) return;
 
         setVerified(true);
-        setStatus("Payment confirmed. Your program access is being updated.");
+        setStatus("Payment confirmed. Your course access is being updated.");
       } catch (error) {
         if (!isMounted) return;
         setStatus(error.message || "Unable to verify payment.");

@@ -29,7 +29,9 @@ export default function ContactPage() {
             </a>
           </div>
           <div>Location: Greater Toronto Area</div>
-          <div>Delivery: Remote via Google Classroom</div>
+          <div>
+            Delivery: Remote and in-person through the DDI Student Dashboard
+          </div>
         </div>
       </SectionCard>
     </PageContainer>

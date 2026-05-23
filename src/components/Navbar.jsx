@@ -14,14 +14,17 @@ export default function Navbar() {
   const navItems = user
     ? [
         { key: "/dashboard", label: "Dashboard" },
-        { key: "/programs", label: "Programs" },
+        { key: "/dashboard/courses", label: "Courses" },
         { key: "/contact", label: "Contact" },
         { key: "/account", label: "Account" },
+        ...(profile?.is_admin || profile?.is_instructor
+          ? [{ key: "/instructor", label: "Instructor" }]
+          : []),
         ...(profile?.is_admin ? [{ key: "/admin", label: "Admin" }] : []),
       ]
     : [
         { key: "/", label: "Home" },
-        { key: "/programs", label: "Programs" },
+        { key: "/courses", label: "Courses" },
         { key: "/contact", label: "Contact" },
         { key: "/account", label: "Account" },
       ];
@@ -39,6 +42,8 @@ export default function Navbar() {
     const active =
       item.key === "/"
         ? location.pathname === "/"
+        : item.key === "/dashboard"
+          ? location.pathname === "/dashboard"
         : location.pathname.startsWith(item.key);
 
     return (
@@ -100,7 +105,7 @@ export default function Navbar() {
               className="hidden text-xs sm:block"
               style={{ color: va.colors.primaryTextDark }}
             >
-              Programming and Development programs
+              Programming and Development courses
             </div>
           </div>
         </button>
