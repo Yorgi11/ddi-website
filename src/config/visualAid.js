@@ -3,8 +3,8 @@ export const visualAid = {
     primaryColor: "#2563eb",
     primaryColorDark: "#1d4ed8",
 
-    secondaryColor: "#14b8a6",
-    secondaryColorDark: "#0f766e",
+    secondaryColor: "#14b866",
+    secondaryColorDark: "#0d7440",
 
     pageColor: "#f8fafc",
     surfaceColor: "#ffffff",
