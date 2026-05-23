@@ -174,27 +174,31 @@ export default function AdminLmsManager() {
           .order("issued_at", { ascending: false }),
       ]);
 
-    const firstError =
-      courseResult.error ||
-      levelResult.error ||
-      sectionResult.error ||
-      instructorResult.error ||
-      enrollmentResult.error ||
-      certificateResult.error;
+    const errors = [
+      ["courses", courseResult.error],
+      ["course levels", levelResult.error],
+      ["class sections", sectionResult.error],
+      ["instructors", instructorResult.error],
+      ["enrollments", enrollmentResult.error],
+      ["certificates", certificateResult.error],
+    ].filter(([, error]) => error);
 
-    if (firstError) {
-      setMessage(firstError.message);
-      return;
+    if (!courseResult.error) setCourses(courseResult.data ?? []);
+    if (!levelResult.error) setCourseLevels(levelResult.data ?? []);
+    if (!sectionResult.error) setSections(sectionResult.data ?? []);
+    if (!instructorResult.error) setInstructors(instructorResult.data ?? []);
+    if (!enrollmentResult.error) setEnrollments(enrollmentResult.data ?? []);
+    if (!certificateResult.error) setCertificates(certificateResult.data ?? []);
+
+    if (errors.length > 0) {
+      setMessage(
+        `Some LMS data could not be loaded: ${errors
+          .map(([label, error]) => `${label}: ${error.message}`)
+          .join(" / ")}`,
+      );
     }
 
-    setCourses(courseResult.data ?? []);
-    setCourseLevels(levelResult.data ?? []);
-    setSections(sectionResult.data ?? []);
-    setInstructors(instructorResult.data ?? []);
-    setEnrollments(enrollmentResult.data ?? []);
-    setCertificates(certificateResult.data ?? []);
-
-    if (!sectionForm.course_id && courseResult.data?.[0]?.id) {
+    if (!sectionForm.course_id && !courseResult.error && courseResult.data?.[0]?.id) {
       const firstCourseId = courseResult.data[0].id;
       const firstLevel = (levelResult.data ?? []).find(
         (level) => level.course_id === firstCourseId,
