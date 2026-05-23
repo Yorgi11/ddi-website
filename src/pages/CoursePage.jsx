@@ -12,6 +12,15 @@ import PageContainer from "../components/PageContainer";
 import SectionCard from "../components/SectionCard";
 import EnrolledCourseCard from "../components/dashboard/EnrolledCourseCard";
 import PrimaryButton from "../components/PrimaryButton";
+import ExpandableDetails from "../components/ExpandableDetails";
+
+function formatDate(value) {
+  if (!value) return "Not scheduled";
+  return new Intl.DateTimeFormat("en-CA", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date(value));
+}
 
 export default function CoursePage() {
   const { courseId } = useParams();
@@ -21,6 +30,9 @@ export default function CoursePage() {
   const [loadingCourse, setLoadingCourse] = useState(true);
   const [enrollments, setEnrollments] = useState([]);
   const [openSections, setOpenSections] = useState([]);
+  const [courseExpanded, setCourseExpanded] = useState(false);
+  const [expandedLevels, setExpandedLevels] = useState(new Set());
+  const [expandedSections, setExpandedSections] = useState(new Set());
   const [sectionMessage, setSectionMessage] = useState("");
 
   useEffect(() => {
@@ -45,6 +57,18 @@ export default function CoursePage() {
 
     loadCourse();
   }, [user, courseId]);
+
+  function toggleSetItem(setter, itemId) {
+    setter((current) => {
+      const next = new Set(current);
+      if (next.has(itemId)) {
+        next.delete(itemId);
+      } else {
+        next.add(itemId);
+      }
+      return next;
+    });
+  }
 
   if (loadingCourse) {
     return (
@@ -89,6 +113,15 @@ export default function CoursePage() {
               Completed: {completedLevelIds.size} / {course.levels.length}{" "}
               levels
             </div>
+            {(course.description || course.summary) && (
+              <ExpandableDetails
+                expanded={courseExpanded}
+                onToggle={() => setCourseExpanded((current) => !current)}
+                label="course details"
+              >
+                <div>{course.description || course.summary}</div>
+              </ExpandableDetails>
+            )}
           </div>
         </SectionCard>
 
@@ -146,6 +179,41 @@ export default function CoursePage() {
                     Price: ${(Number(section.price_cents || 0) / 100).toFixed(2)}
                   </div>
                   <div className={va.spacing.marginTopMedium}>
+                    <ExpandableDetails
+                      expanded={expandedSections.has(section.id)}
+                      onToggle={() =>
+                        toggleSetItem(setExpandedSections, section.id)
+                      }
+                      label="section details"
+                    >
+                      <div>Starts: {formatDate(section.starts_at)}</div>
+                      <div>Ends: {formatDate(section.ends_at)}</div>
+                      <div>
+                        Enrollment closes:{" "}
+                        {formatDate(section.enrollment_closes_at)}
+                      </div>
+                      <div>Capacity: {section.capacity ?? "Not limited"}</div>
+                      <div>Location: {section.location || "Not set"}</div>
+                      <div>Meeting URL: {section.meeting_url || "Not set"}</div>
+                      {section.course_level?.description && (
+                        <div>
+                          <div style={va.textStyles.bodyText(va.colors.primaryText)}>
+                            Level Description
+                          </div>
+                          <div>{section.course_level.description}</div>
+                        </div>
+                      )}
+                      {section.course_level?.syllabus && (
+                        <div>
+                          <div style={va.textStyles.bodyText(va.colors.primaryText)}>
+                            Syllabus
+                          </div>
+                          <div>{section.course_level.syllabus}</div>
+                        </div>
+                      )}
+                    </ExpandableDetails>
+                  </div>
+                  <div className={va.spacing.marginTopMedium}>
                     <PrimaryButton
                       fullWidth
                       onClick={() => navigate(`/checkout/class/${section.id}`)}
@@ -199,6 +267,34 @@ export default function CoursePage() {
                   <div style={va.textStyles.bodyTextThin(va.colors.primaryTextDark)}>
                     Status: {status}
                   </div>
+                  {(level.description || level.syllabus) && (
+                    <div className={va.spacing.marginTopMedium}>
+                      <ExpandableDetails
+                        expanded={expandedLevels.has(level.id)}
+                        onToggle={() =>
+                          toggleSetItem(setExpandedLevels, level.id)
+                        }
+                        label="level details"
+                      >
+                        {level.description && (
+                          <div>
+                            <div style={va.textStyles.bodyText(va.colors.primaryText)}>
+                              Description
+                            </div>
+                            <div>{level.description}</div>
+                          </div>
+                        )}
+                        {level.syllabus && (
+                          <div>
+                            <div style={va.textStyles.bodyText(va.colors.primaryText)}>
+                              Syllabus
+                            </div>
+                            <div>{level.syllabus}</div>
+                          </div>
+                        )}
+                      </ExpandableDetails>
+                    </div>
+                  )}
                 </div>
               );
             })}

@@ -148,8 +148,8 @@ export async function fetchOpenClassSections(courseId = null) {
     .select(
       `
       *,
-      course:courses(slug,title,summary,certificate_title),
-      course_level:course_levels(slug,level_number,title,summary,syllabus)
+      course:courses(slug,title,summary,description,certificate_title),
+      course_level:course_levels(slug,level_number,title,summary,description,syllabus)
     `,
     )
     .eq("status", "open")
@@ -174,8 +174,8 @@ export async function fetchClassSection(classSectionId) {
     .select(
       `
       *,
-      course:courses(slug,title,summary,certificate_title),
-      course_level:course_levels(slug,level_number,title,summary,syllabus)
+      course:courses(slug,title,summary,description,certificate_title),
+      course_level:course_levels(slug,level_number,title,summary,description,syllabus)
     `,
     )
     .eq("id", classSectionId)
