@@ -15,6 +15,7 @@ export default function Navbar() {
     ? [
         { key: "/dashboard", label: "Dashboard" },
         { key: "/dashboard/courses", label: "Courses" },
+        { key: "/showcase", label: "Showcase" },
         { key: "/contact", label: "Contact" },
         { key: "/account", label: "Account" },
         ...(profile?.is_admin || profile?.is_instructor
@@ -25,6 +26,7 @@ export default function Navbar() {
     : [
         { key: "/", label: "Home" },
         { key: "/courses", label: "Courses" },
+        { key: "/showcase", label: "Showcase" },
         { key: "/contact", label: "Contact" },
         { key: "/account", label: "Account" },
       ];

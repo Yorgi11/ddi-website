@@ -9,6 +9,7 @@ import InstructorRoute from "./components/InstructorRoute";
 const HomePage = lazy(() => import("./pages/HomePage"));
 const PublicCoursesPage = lazy(() => import("./pages/PublicCoursesPage"));
 const PublicCoursePage = lazy(() => import("./pages/PublicCoursePage"));
+const ShowcasePage = lazy(() => import("./pages/ShowcasePage"));
 const AccountPage = lazy(() => import("./pages/AccountPage"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
 const ETransferPage = lazy(() => import("./pages/ETransferPage"));
@@ -45,6 +46,7 @@ export default function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/courses" element={<PublicCoursesPage />} />
           <Route path="/courses/:courseId" element={<PublicCoursePage />} />
+          <Route path="/showcase" element={<ShowcasePage />} />
           <Route path="/programs/*" element={<Navigate to="/courses" replace />} />
           <Route path="/checkout/level1" element={<Navigate to="/courses" replace />} />
           <Route path="/checkout/level2" element={<Navigate to="/courses" replace />} />
